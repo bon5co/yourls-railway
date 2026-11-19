@@ -6,8 +6,8 @@
 # writes user/config.php from the environment and runs /docker-entrypoint-init.d/10-railway.sh before Apache starts).
 set -u
 : "${PORT:=8080}"
+export YOURLS_USER="${YOURLS_USER:-admin}"
 fail() { echo "[railway] $1" >&2; exit 1; }
-[ -n "${YOURLS_USER:-}" ] || fail "YOURLS_USER is not set; refusing to start a URL shortener without an admin login"
 [ -n "${YOURLS_PASS:-}" ] || fail "YOURLS_PASS is not set; refusing to start a URL shortener without an admin login"
 [ "${#YOURLS_PASS}" -ge 12 ] || fail "YOURLS_PASS must be at least 12 characters"
 [ -n "${YOURLS_COOKIEKEY:-}" ] || fail "YOURLS_COOKIEKEY is not set; a random key per start would sign everyone out on every redeploy"

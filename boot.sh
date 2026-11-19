@@ -17,6 +17,10 @@ if [ -z "${YOURLS_SITE:-}" ]; then
   [ -n "${RAILWAY_PUBLIC_DOMAIN:-}" ] || fail "YOURLS_SITE is not set and there is no RAILWAY_PUBLIC_DOMAIN to derive it from"
   export YOURLS_SITE="https://${RAILWAY_PUBLIC_DOMAIN}"
 fi
+# The upstream image runs a2dismod mpm_event in a later layer. Railway ignores that whiteout, so mpm_event returns beside mpm_prefork
+# and Apache dies with "AH00534: More than one MPM loaded". Disable the others at boot.
+a2dismod -f mpm_event mpm_worker >/dev/null 2>&1 || true
+a2enmod mpm_prefork >/dev/null 2>&1 || true
 case "$PORT" in ''|*[!0-9]*) fail "PORT must be a number, got '$PORT'";; esac
 sed -i "s/^Listen 8080\$/Listen ${PORT}/" /etc/apache2/ports.conf
 sed -i "s/<VirtualHost 127.0.0.1:8080 \*:8080>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-enabled/000-default.conf

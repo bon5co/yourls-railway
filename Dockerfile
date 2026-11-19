@@ -2,7 +2,7 @@
 # YOURLS_USER / YOURLS_PASS with no minimum and falls back to a random cookie key at every start (so every redeploy signs everyone
 # out), and leaves the database tables for a human to create by clicking "Install" on /admin/install.php, which any visitor can do
 # first. The wrapper refuses to start without a strong login and a fixed cookie key, listens on PORT, installs the tables at boot
-# and serves a plain /healthz file.
+# and serves a plain /healthz file. Railway ignores upstream layer whiteouts, so mpm_event comes back and the wrapper disables it at boot.
 # upstream: YOURLS/YOURLS
 FROM yourls:1.10.6@sha256:3631239a8cc0f3911f0cdae00f5475f48a65b9f2c9f120ba137766bba28c945c
 
